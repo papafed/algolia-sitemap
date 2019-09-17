@@ -13,7 +13,10 @@ function init({
 }) {
   let batch = [];
   const client = algoliasearch(algoliaConfig.appId, algoliaConfig.apiKey);
-  const index = client.initIndex(algoliaConfig.indexName);
+  const indexes = algoliaConfig.indexNames.map(indexName =>
+    client.initIndex(indexName)
+  );
+  let index = indexes.pop();
   const sitemaps = [];
 
   const handleSitemap = async entries =>
@@ -58,6 +61,12 @@ function init({
         await flush();
       }
       ({ hits, cursor } = await index.browseFrom(cursor));
+      if (!cursor && indexes.length > 0) {
+        index = indexes.pop();
+        ({ hits, cursor } = await index.browse());
+        // eslint-disable-next-line no-continue
+        continue;
+      }
     } while (cursor);
     await handleSitemap(batch);
     const sitemapIndex = createSitemapindex(sitemaps);

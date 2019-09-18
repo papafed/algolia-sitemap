@@ -73,7 +73,9 @@ function init({
       let hits = args.hits,
           cursor = args.cursor;
 
+      let keepGoing;
       do {
+        keepGoing = false;
         if (!hits) {
           return;
         }
@@ -93,14 +95,14 @@ function init({
         if (!cursor && indexes.length > 0) {
           index = indexes.pop();
 
-          // eslint-disable-next-line no-continue
           var _ref5 = yield index.browse();
 
           hits = _ref5.hits;
           cursor = _ref5.cursor;
-          continue;
+
+          keepGoing = true;
         }
-      } while (cursor);
+      } while (cursor || keepGoing);
       yield handleSitemap(batch);
       const sitemapIndex = createSitemapindex(sitemaps);
       yield saveSiteMap({

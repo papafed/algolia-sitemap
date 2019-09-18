@@ -47,7 +47,9 @@ function init({
 
   const aggregator = async args => {
     let { hits, cursor } = args;
+    let keepGoing;
     do {
+      keepGoing = false;
       if (!hits) {
         return;
       }
@@ -64,10 +66,9 @@ function init({
       if (!cursor && indexes.length > 0) {
         index = indexes.pop();
         ({ hits, cursor } = await index.browse());
-        // eslint-disable-next-line no-continue
-        continue;
+        keepGoing = true;
       }
-    } while (cursor);
+    } while (cursor || keepGoing);
     await handleSitemap(batch);
     const sitemapIndex = createSitemapindex(sitemaps);
     await saveSiteMap({

@@ -1,3 +1,4 @@
 examples/*/sitemaps/*.xml
 node_modules
 # build
+package-lock.json

@@ -43,7 +43,7 @@ Where `algoliaConfig` holds the setup for your index. Make sure that the API key
 const algoliaConfig = {
   appId: 'XXXXX',
   apiKey: 'xxxxxx', // make sure the key has "browse" capability
-  indexName: 'xxxxxx',
+  indexNames: ['xxxxxx','yyyyyy', ...]
 };
 ```
 
